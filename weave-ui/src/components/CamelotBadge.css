@@ -1,0 +1,39 @@
+.camelot-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800;
+    font-size: 0.75rem;
+    letter-spacing: -0.5px;
+    min-width: 44px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.camelot-badge.major {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: #DCFCE7;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.camelot-badge.minor {
+    background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+    color: #F5F3FF;
+    border: 1px solid rgba(124, 58, 237, 0.3);
+}
+
+.badge-num {
+    font-size: 0.9rem;
+}
+
+.badge-type {
+    opacity: 0.8;
+    margin-left: 1px;
+}
+
+.camelot-badge-empty {
+    color: var(--color-text-muted);
+    font-family: inherit;
+}

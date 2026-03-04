@@ -1,251 +1,116 @@
-.sequencer-page {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
+/* Refining Sequencer.css for higher fidelity */
+
+.header-playlist-tag {
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: var(--color-accent);
+    margin-bottom: 2px;
+}
+
+.chart-outer {
     background: var(--color-bg);
-    overflow: hidden;
-}
-
-.sequencer-header {
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 2rem;
-    border-bottom: 1px solid var(--color-border);
-    z-index: 100;
-}
-
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-}
-
-.back-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    color: var(--color-text-muted);
-}
-
-.back-btn:hover {
-    color: white;
-    border-color: var(--color-text-muted);
-}
-
-.header-title h2 {
-    font-size: 1.25rem;
-    font-weight: 700;
-}
-
-.header-title p {
-    font-size: 0.85rem;
-    color: var(--color-text-muted);
-}
-
-.header-actions {
-    display: flex;
-    gap: 1rem;
-}
-
-.header-actions button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0.75rem 1.25rem;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-.weave-btn {
-    background: var(--color-accent);
-    color: white;
-    box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
-}
-
-.weave-btn:hover {
-    background: var(--color-accent-hover);
-    transform: translateY(-2px);
-}
-
-.export-btn {
-    background: white;
-    color: black;
-}
-
-.reset-btn {
-    background: var(--color-surface);
-    color: var(--color-text);
-    border: 1px solid var(--color-border) !important;
-}
-
-.sequencer-content {
-    flex: 1;
-    display: grid;
-    grid-template-columns: 350px 1fr;
-    overflow: hidden;
-}
-
-.stats-panel {
-    padding: 2rem;
-    border-right: 1px solid var(--color-border);
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-}
-
-.stat-group label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 1.5rem;
-}
-
-.chart-container {
-    height: 180px;
-    width: 100%;
-}
-
-.instruction-box {
-    background: rgba(124, 58, 237, 0.05);
-    border: 1px solid rgba(124, 58, 237, 0.2);
     padding: 1.5rem;
     border-radius: 20px;
+    height: 220px;
 }
 
-.instruction-box h3 {
-    font-size: 1rem;
-    margin: 1rem 0 0.5rem;
-}
-
-.instruction-box p {
-    font-size: 0.9rem;
-    color: var(--color-text-muted);
-    line-height: 1.5;
-}
-
-.tracklist-panel {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-.track-grid-header {
-    display: grid;
-    grid-template-columns: 50px 1fr 100px 100px 150px;
-    padding: 1.25rem 2rem;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
+.info-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(124, 58, 237, 0.1);
+    border-radius: 20px;
+    color: var(--color-accent);
+    font-size: 0.65rem;
+    font-weight: 800;
     letter-spacing: 1px;
-    border-bottom: 1px solid var(--color-border);
 }
 
-.track-list {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0.5rem 0;
-}
-
-.track-row {
-    display: grid;
-    grid-template-columns: 50px 1fr 100px 100px 150px;
-    padding: 1rem 2rem;
+.logic-hint {
+    display: flex;
     align-items: center;
-    border-bottom: 1px solid transparent;
-    transition: var(--transition-fast);
-}
-
-.track-row:hover {
-    background: var(--color-surface);
-}
-
-.track-index {
-    font-size: 0.85rem;
+    gap: 6px;
+    margin-top: 1.5rem;
     color: var(--color-text-muted);
+    font-size: 0.75rem;
+    font-style: italic;
 }
 
-.track-main {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.track-img {
-    width: 40px;
-    height: 40px;
-    border-radius: 4px;
+.track-img-v2 {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
     overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     background: var(--color-surface);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.track-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.track-meta {
-    display: flex;
-    flex-direction: column;
 }
 
 .track-name {
+    color: white;
     font-size: 0.95rem;
-    font-weight: 600;
 }
 
 .track-artist {
+    margin-top: 2px;
     font-size: 0.8rem;
-    color: var(--color-text-muted);
+    opacity: 0.6;
 }
 
-.track-key-badge {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    color: var(--color-highlight);
+.track-energy-col {
+    width: 150px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.energy-value {
+    font-size: 0.75rem;
     font-weight: 700;
+    color: var(--color-text-muted);
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
 }
 
-.track-bpm {
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-.track-energy-bar {
-    width: 100px;
+.energy-track {
     height: 4px;
     background: var(--color-border);
-    border-radius: 10px;
+    border-radius: 5px;
     overflow: hidden;
+    width: 100%;
 }
 
 .energy-fill {
     height: 100%;
-    background: var(--color-accent);
+    background: linear-gradient(to right, var(--color-accent), var(--color-highlight));
+    border-radius: 5px;
 }
 
-.sequencer-loading {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1.5rem;
+.loading-text {
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+.col-idx {
+    width: 50px;
+}
+
+.col-track {
+    flex: 1;
+}
+
+.col-key {
+    width: 100px;
+}
+
+.col-bpm {
+    width: 100px;
+}
+
+.col-energy {
+    width: 150px;
 }

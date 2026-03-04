@@ -5,36 +5,15 @@ import {
     Play,
     RotateCcw,
     Save,
-    ArrowRight,
     Activity,
     Zap,
-    Disc
+    Disc,
+    Info
 } from 'lucide-react';
 import { getPlaylistTracks, sequencePlaylist, exportPlaylist } from '../api/spotify';
-import { Line } from 'react-chartjs-2';
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    Filler
-} from 'chart.js';
+import EnergyCurve from '../components/EnergyCurve';
+import CamelotBadge from '../components/CamelotBadge';
 import '../styles/Sequencer.css';
-
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    Filler
-);
 
 const Sequencer = () => {
     const { playlistId } = useParams();
@@ -78,8 +57,10 @@ const Sequencer = () => {
     const handleExport = async () => {
         try {
             setExporting(true);
-            await exportPlaylist(playlistId, sequencedTracks);
-            alert('Playlist exported successfully!');
+            const response = await exportPlaylist(playlistId, sequencedTracks);
+            if (response.data.success) {
+                alert('Set successfully saved to your Spotify library!');
+            }
         } catch (err) {
             console.error('Error exporting:', err);
         } finally {
@@ -87,61 +68,28 @@ const Sequencer = () => {
         }
     };
 
-    const chartData = {
-        labels: (sequencedTracks.length ? sequencedTracks : originalTracks).map((_, i) => i + 1),
-        datasets: [
-            {
-                label: 'Energy Profile',
-                data: (sequencedTracks.length ? sequencedTracks : originalTracks).map(t => t.energy),
-                borderColor: '#7C3AED',
-                backgroundColor: 'rgba(124, 58, 237, 0.1)',
-                fill: true,
-                tension: 0.4,
-                pointRadius: 2,
-            }
-        ]
-    };
-
-    const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: { display: false },
-            tooltip: {
-                backgroundColor: '#12121A',
-                titleColor: '#E2E8F0',
-                bodyColor: '#64748B',
-                borderColor: '#1E1E2E',
-                borderWidth: 1,
-            }
-        },
-        scales: {
-            y: { min: 0, max: 1, display: false },
-            x: { display: false }
-        }
-    };
-
     if (loading) {
         return (
             <div className="sequencer-loading">
                 <div className="spinner"></div>
-                <p>Analyzing audio architecture...</p>
+                <p className="loading-text">Analyzing Audio Features...</p>
             </div>
         );
     }
 
     const tracksToDisplay = sequencedTracks.length ? sequencedTracks : originalTracks;
+    const energyData = tracksToDisplay.map(t => t.energy);
 
     return (
         <div className="sequencer-page">
             <header className="sequencer-header glass">
                 <div className="header-left">
                     <button onClick={() => navigate('/dashboard')} className="back-btn">
-                        <ArrowLeft size={20} />
+                        <ArrowLeft size={18} />
                     </button>
                     <div className="header-title">
-                        <h2>{playlistInfo?.name || 'Processing Playlist'}</h2>
-                        <p>{originalTracks.length} tracks found</p>
+                        <div className="header-playlist-tag">OPTIMIZING PLAYLIST</div>
+                        <h2>{playlistInfo?.name || 'Processing...'}</h2>
                     </div>
                 </div>
 
@@ -149,18 +97,18 @@ const Sequencer = () => {
                     {sequencedTracks.length > 0 ? (
                         <>
                             <button onClick={() => setSequencedTracks([])} className="reset-btn">
-                                <RotateCcw size={18} />
+                                <RotateCcw size={16} />
                                 <span>Reset</span>
                             </button>
                             <button onClick={handleExport} className="export-btn" disabled={exporting}>
-                                <Save size={18} />
-                                <span>{exporting ? 'Exporting...' : 'Save to Spotify'}</span>
+                                <Save size={16} />
+                                <span>{exporting ? 'Saving...' : 'Save to Spotify'}</span>
                             </button>
                         </>
                     ) : (
                         <button onClick={handleWeave} className="weave-btn" disabled={weaving}>
-                            <Play size={18} fill="currentColor" />
-                            <span>{weaving ? 'Weaving...' : 'Run Weave Engine'}</span>
+                            <Play size={16} fill="currentColor" />
+                            <span>{weaving ? 'Weaving...' : 'Generate Set'}</span>
                         </button>
                     )}
                 </div>
@@ -170,36 +118,44 @@ const Sequencer = () => {
                 <aside className="stats-panel glass">
                     <div className="stat-group">
                         <label><Activity size={14} /> Energy Profile</label>
-                        <div className="chart-container">
-                            <Line data={chartData} options={chartOptions} />
+                        <div className="chart-outer glass">
+                            <EnergyCurve data={energyData} />
                         </div>
                     </div>
 
                     <div className="instruction-box fade-in">
-                        <Zap size={20} color="var(--color-accent)" />
-                        <h3>Optimization Active</h3>
-                        <p> Weave IO is reordering your set using harmonic proximity (Camelot Wheel) and energy tiering to ensure a perfect flow.</p>
+                        <div className="info-badge">
+                            <Zap size={14} />
+                            <span>SMART ENGINE ACTIVE</span>
+                        </div>
+                        <h3>Intelligent Flow</h3>
+                        <p> Weave IO automatically arranges tracks by energy tiers, ensuring the perfect vibe from start to finish.</p>
+
+                        <div className="logic-hint">
+                            <Info size={12} />
+                            <span>Uses Camelot Wheel Adjacency</span>
+                        </div>
                     </div>
                 </aside>
 
                 <section className="tracklist-panel">
                     <div className="track-grid-header">
-                        <span>#</span>
-                        <span>Track</span>
-                        <span>Key</span>
-                        <span>BPM</span>
-                        <span>Energy</span>
+                        <span className="col-idx">#</span>
+                        <span className="col-track">Track</span>
+                        <span className="col-key">Key</span>
+                        <span className="col-bpm">BPM</span>
+                        <span className="col-energy">Energy</span>
                     </div>
                     <div className="track-list scrollable">
                         {tracksToDisplay.map((track, idx) => (
-                            <div key={track.id} className="track-row fade-in" style={{ animationDelay: `${idx * 0.02}s` }}>
-                                <span className="track-index">{idx + 1}</span>
+                            <div key={track.id} className="track-row fade-in" style={{ animationDelay: `${idx * 0.03}s` }}>
+                                <span className="track-index">{String(idx + 1).padStart(2, '0')}</span>
                                 <div className="track-main">
-                                    <div className="track-img">
+                                    <div className="track-img-v2">
                                         {track.album?.images?.[0]?.url ? (
                                             <img src={track.album.images[0].url} alt="" />
                                         ) : (
-                                            <Disc size={16} />
+                                            <div className="track-img-placeholder"><Disc size={16} /></div>
                                         )}
                                     </div>
                                     <div className="track-meta">
@@ -207,10 +163,15 @@ const Sequencer = () => {
                                         <span className="track-artist">{track.artists?.[0]?.name}</span>
                                     </div>
                                 </div>
-                                <span className="track-key-badge">{track.camelot || '—'}</span>
+                                <div className="track-key-col">
+                                    <CamelotBadge code={track.camelot} />
+                                </div>
                                 <span className="track-bpm">{Math.round(track.tempo)}</span>
-                                <div className="track-energy-bar">
-                                    <div className="energy-fill" style={{ width: `${track.energy * 100}%` }}></div>
+                                <div className="track-energy-col">
+                                    <div className="energy-value">{(track.energy * 100).toFixed(0)}%</div>
+                                    <div className="energy-track">
+                                        <div className="energy-fill" style={{ width: `${track.energy * 100}%` }}></div>
+                                    </div>
                                 </div>
                             </div>
                         ))}

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Layers, Music, Search, User } from 'lucide-react';
+import { Music, User, LogOut, RefreshCw } from 'lucide-react';
 import { getPlaylists } from '../api/spotify';
+import PlaylistCard from '../components/PlaylistCard';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
@@ -21,67 +22,68 @@ const Dashboard = () => {
             setPlaylists(response.data.items || []);
         } catch (err) {
             console.error('Error fetching playlists:', err);
-            setError('Could not load playlists. Make sure you are logged in.');
+            setError('Session expired or access denied. Please reconnect.');
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleLogout = () => {
+        // Clear cookie (logic handled by backend /auth/logout in future)
+        window.location.href = '/';
     };
 
     return (
         <div className="dashboard-page">
             <nav className="dashboard-nav glass">
                 <div className="nav-brand">
-                    <Music size={24} color="var(--color-accent)" />
-                    <span>Weave IO</span>
+                    <div className="brand-logo">
+                        <Music size={20} color="white" />
+                    </div>
+                    <span className="brand-name">Weave IO</span>
                 </div>
-                <div className="nav-profile">
-                    <div className="profile-icon">
+
+                <div className="nav-actions">
+                    <button onClick={fetchPlaylists} className="nav-icon-btn" title="Refresh">
+                        <RefreshCw size={18} className={loading ? 'spinning' : ''} />
+                    </button>
+                    <div className="nav-divider"></div>
+                    <button onClick={handleLogout} className="logout-btn">
+                        <LogOut size={16} />
+                        <span>Disconnect</span>
+                    </button>
+                    <div className="profile-wrapper">
                         <User size={18} />
                     </div>
                 </div>
             </nav>
 
-            <main className="dashboard-main container fade-in">
-                <header className="main-header">
-                    <h1>Your Playlists</h1>
-                    <p>Select a playlist to weave into a set.</p>
+            <main className="dashboard-main container">
+                <header className="main-header fade-in">
+                    <div className="header-eyebrow">CURATION DASHBOARD</div>
+                    <h1>Woven Sets</h1>
+                    <p>Select a playlist to reorder with harmonic intelligence.</p>
                 </header>
 
-                {loading ? (
+                {loading && playlists.length === 0 ? (
                     <div className="loading-state">
                         <div className="spinner"></div>
-                        <p>Fetching your collection...</p>
+                        <p>Scanning your musical archives...</p>
                     </div>
                 ) : error ? (
-                    <div className="error-state glass">
+                    <div className="error-state glass fade-in">
+                        <div className="error-icon">!</div>
                         <p>{error}</p>
-                        <button onClick={() => window.location.href = '/'}>Back to Login</button>
+                        <button onClick={() => window.location.href = 'http://localhost:3001/auth/login'}>Reconnect Spotify</button>
                     </div>
                 ) : (
-                    <div className="playlist-grid">
+                    <div className="playlist-grid fade-in">
                         {playlists.map((playlist) => (
-                            <div
+                            <PlaylistCard
                                 key={playlist.id}
-                                className="playlist-card glass"
+                                playlist={playlist}
                                 onClick={() => navigate(`/sequencer/${playlist.id}`)}
-                            >
-                                <div className="playlist-image">
-                                    {playlist.images?.[0]?.url ? (
-                                        <img src={playlist.images[0].url} alt={playlist.name} />
-                                    ) : (
-                                        <div className="image-placeholder">
-                                            <Music size={40} />
-                                        </div>
-                                    )}
-                                    <div className="playlist-overlay">
-                                        <button className="weave-trigger">Weave Set</button>
-                                    </div>
-                                </div>
-                                <div className="playlist-info">
-                                    <h3>{playlist.name}</h3>
-                                    <p>{playlist.tracks?.total || 0} tracks</p>
-                                </div>
-                            </div>
+                            />
                         ))}
                     </div>
                 )}
