@@ -1,114 +1,149 @@
-.playlist-card-v2 {
+.playlist-card {
     position: relative;
     border-radius: 24px;
     overflow: hidden;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    padding: 12px;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.playlist-card-v2:hover {
-    transform: translateY(-8px);
-    background: var(--color-surface-hover);
-    border-color: var(--color-accent);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+.playlist-card:hover {
+    transform: translateY(-12px) scale(1.02);
+    border-color: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow:
+        0 30px 60px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 .card-image-container {
     position: relative;
     aspect-ratio: 1;
-    border-radius: 16px;
     overflow: hidden;
-    background: var(--color-bg);
+    background: #111;
 }
 
-.card-image {
+.playlist-art {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.6s ease;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.playlist-card-v2:hover .card-image {
-    transform: scale(1.05);
+.playlist-card:hover .playlist-art {
+    transform: scale(1.1);
 }
 
-.card-image-placeholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-border);
-}
-
-.card-overlay {
+.art-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to top, rgba(10, 10, 15, 0.8) 0%, transparent 60%);
+    inset: 0;
+    background: linear-gradient(to top, rgba(5, 5, 8, 0.8) 0%, transparent 60%);
+    opacity: 0.6;
+    transition: opacity 0.5s ease;
+}
+
+.playlist-card:hover .art-overlay {
+    opacity: 0.9;
+}
+
+.card-play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    width: 64px;
+    height: 64px;
+    background: #fff;
+    color: #000;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.playlist-card-v2:hover .card-overlay {
+.playlist-card:hover .card-play-btn {
     opacity: 1;
-}
-
-.play-button-visual {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: var(--color-accent);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 10px 20px rgba(124, 58, 237, 0.4);
-    transform: scale(0.8) translateY(20px);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.playlist-card-v2:hover .play-button-visual {
-    transform: scale(1) translateY(0);
+    transform: translate(-50%, -50%) scale(1);
 }
 
 .card-content {
-    padding: 16px 4px 8px;
+    padding: 1.75rem;
 }
 
-.card-title {
-    font-size: 1.1rem;
+.playlist-name {
+    display: block;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
     font-weight: 700;
-    margin-bottom: 6px;
+    color: #fff;
+    margin-bottom: 0.6rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    color: var(--color-text);
 }
 
-.card-meta {
+.playlist-meta {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--color-text-muted);
-    letter-spacing: 0.5px;
+    gap: 12px;
 }
 
 .track-count {
-    color: var(--color-accent);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.dot {
+.meta-dot {
     width: 3px;
     height: 3px;
+    background: rgba(255, 255, 255, 0.2);
     border-radius: 50%;
-    background: var(--color-border);
+}
+
+.owner-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #7C3AED;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* Shimmer effect for empty states */
+.playlist-card.skeleton {
+    cursor: default;
+}
+
+.skeleton-art {
+    width: 100%;
+    aspect-ratio: 1;
+    background: rgba(255, 255, 255, 0.03);
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton-art::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    to {
+        transform: translateX(100%);
+    }
 }
