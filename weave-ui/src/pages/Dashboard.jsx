@@ -1,36 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Music, User, LogOut, RefreshCw } from 'lucide-react';
-import { getPlaylists } from '../api/spotify';
-import PlaylistCard from '../components/PlaylistCard';
+import { supabase } from '../lib/supabase';
+// Assuming we'll migrate getPlaylists to use Supabase later,
+// for now keeping the structure but checking session
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
     const [playlists, setPlaylists] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [user, setUser] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchPlaylists();
+        checkUser();
     }, []);
 
-    const fetchPlaylists = async () => {
-        try {
-            setLoading(true);
-            const response = await getPlaylists();
-            setPlaylists(response.data.items || []);
-        } catch (err) {
-            console.error('Error fetching playlists:', err);
-            setError('Session expired or access denied. Please reconnect.');
-        } finally {
-            setLoading(false);
+    const checkUser = async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            navigate('/');
+            return;
         }
+        setUser(session.user);
+        // Placeholder until we wire up the Spotify API via Supabase Edge Functions
+        setLoading(false);
     };
 
-    const handleLogout = () => {
-        // Clear cookie (logic handled by backend /auth/logout in future)
-        window.location.href = '/';
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        navigate('/');
     };
 
     return (
@@ -44,16 +43,17 @@ const Dashboard = () => {
                 </div>
 
                 <div className="nav-actions">
-                    <button onClick={fetchPlaylists} className="nav-icon-btn" title="Refresh">
-                        <RefreshCw size={18} className={loading ? 'spinning' : ''} />
-                    </button>
                     <div className="nav-divider"></div>
                     <button onClick={handleLogout} className="logout-btn">
                         <LogOut size={16} />
                         <span>Disconnect</span>
                     </button>
                     <div className="profile-wrapper">
-                        <User size={18} />
+                        {user?.user_metadata?.avatar_url ? (
+                            <img src={user.user_metadata.avatar_url} alt="" style={{ width: '100%', borderRadius: '50%' }} />
+                        ) : (
+                            <User size={18} />
+                        )}
                     </div>
                 </div>
             </nav>
@@ -62,29 +62,18 @@ const Dashboard = () => {
                 <header className="main-header fade-in">
                     <div className="header-eyebrow">CURATION DASHBOARD</div>
                     <h1>Woven Sets</h1>
-                    <p>Select a playlist to reorder with harmonic intelligence.</p>
+                    <p>Welcome back, {user?.user_metadata?.full_name || 'Curator'}. Select a playlist to begin.</p>
                 </header>
 
-                {loading && playlists.length === 0 ? (
+                {loading ? (
                     <div className="loading-state">
                         <div className="spinner"></div>
                         <p>Scanning your musical archives...</p>
                     </div>
-                ) : error ? (
-                    <div className="error-state glass fade-in">
-                        <div className="error-icon">!</div>
-                        <p>{error}</p>
-                        <button onClick={() => window.location.href = 'http://localhost:3001/auth/login'}>Reconnect Spotify</button>
-                    </div>
                 ) : (
-                    <div className="playlist-grid fade-in">
-                        {playlists.map((playlist) => (
-                            <PlaylistCard
-                                key={playlist.id}
-                                playlist={playlist}
-                                onClick={() => navigate(`/sequencer/${playlist.id}`)}
-                            />
-                        ))}
+                    <div className="empty-state glass fade-in">
+                        <h3>Supabase Integration Active</h3>
+                        <p>Next: Wiring up Spotify data fetching via Supabase Edge Functions.</p>
                     </div>
                 )}
             </main>

@@ -1,15 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Music, Disc } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 import '../styles/Login.css';
 
 const Login = () => {
-    const handleLogin = () => {
-        window.location.href = 'http://localhost:3001/auth/login';
+    const handleLogin = async () => {
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'spotify',
+            options: {
+                scopes: 'user-read-private playlist-read-private playlist-modify-public playlist-modify-private',
+                redirectTo: window.location.origin + '/dashboard',
+            },
+        });
+
+        if (error) {
+            console.error('Login error:', error.message);
+            alert('Authentication failed. Check your Supabase configuration.');
+        }
     };
 
     return (
         <div className="login-page">
-            {/* Dynamic Visual Layer */}
             <div className="visual-field">
                 <div className="gradient-sphere sphere-1"></div>
                 <div className="gradient-sphere sphere-2"></div>
@@ -37,7 +48,7 @@ const Login = () => {
                                 <Music size={28} color="white" strokeWidth={2.5} />
                             </div>
                             <h3>Connect to Begin</h3>
-                            <p>Sign in with Spotify to access your playlists and start weaving.</p>
+                            <p>Sign in with Spotify via Supabase to access your playlists and start weaving.</p>
                         </div>
 
                         <button onClick={handleLogin} className="spotify-auth-btn">
@@ -58,7 +69,7 @@ const Login = () => {
 
             <footer className="login-footer">
                 <div className="footer-line"></div>
-                <p>V1.0 MVP — Precision Curation Layer</p>
+                <p>V2.0 Supabase — Precision Curation Layer</p>
             </footer>
         </div>
     );
