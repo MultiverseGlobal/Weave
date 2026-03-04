@@ -11,6 +11,7 @@ import {
     Info
 } from 'lucide-react';
 import { getPlaylistTracks, sequencePlaylist, exportPlaylist } from '../api/spotify';
+import { supabase } from '../lib/supabase';
 import EnergyCurve from '../components/EnergyCurve';
 import CamelotBadge from '../components/CamelotBadge';
 import '../styles/Sequencer.css';
@@ -26,15 +27,24 @@ const Sequencer = () => {
     const [playlistInfo, setPlaylistInfo] = useState(null);
 
     useEffect(() => {
-        loadPlaylistData();
+        checkSession();
     }, [playlistId]);
+
+    const checkSession = async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            navigate('/');
+            return;
+        }
+        loadPlaylistData();
+    };
 
     const loadPlaylistData = async () => {
         try {
             setLoading(true);
-            const response = await getPlaylistTracks(playlistId);
-            setOriginalTracks(response.data.tracks);
-            setPlaylistInfo(response.data.info);
+            const { data } = await getPlaylistTracks(playlistId);
+            setOriginalTracks(data.tracks || []);
+            setPlaylistInfo(data.info);
         } catch (err) {
             console.error('Error loading tracks:', err);
         } finally {
@@ -45,8 +55,8 @@ const Sequencer = () => {
     const handleWeave = async () => {
         try {
             setWeaving(true);
-            const response = await sequencePlaylist(playlistId);
-            setSequencedTracks(response.data.orderedTracks);
+            const { data } = await sequencePlaylist(playlistId);
+            setSequencedTracks(data.orderedTracks || []);
         } catch (err) {
             console.error('Error weaving playlist:', err);
         } finally {
@@ -57,9 +67,10 @@ const Sequencer = () => {
     const handleExport = async () => {
         try {
             setExporting(true);
-            const response = await exportPlaylist(playlistId, sequencedTracks);
-            if (response.data.success) {
+            const { data } = await exportPlaylist(playlistId, sequencedTracks);
+            if (data.success) {
                 alert('Set successfully saved to your Spotify library!');
+                if (data.url) window.open(data.url, '_blank');
             }
         } catch (err) {
             console.error('Error exporting:', err);

@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Music, User, LogOut, RefreshCw } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-// Assuming we'll migrate getPlaylists to use Supabase later,
-// for now keeping the structure but checking session
+import { getPlaylists } from '../api/spotify';
+import PlaylistCard from '../components/PlaylistCard';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
     const [playlists, setPlaylists] = useState([]);
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(null);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -23,8 +24,20 @@ const Dashboard = () => {
             return;
         }
         setUser(session.user);
-        // Placeholder until we wire up the Spotify API via Supabase Edge Functions
-        setLoading(false);
+        await fetchPlaylists();
+    };
+
+    const fetchPlaylists = async () => {
+        try {
+            setLoading(true);
+            const { data } = await getPlaylists();
+            setPlaylists(data.items || []);
+        } catch (err) {
+            console.error('Error fetching playlists:', err);
+            setError('Could not load playlists. Make sure Spotify is connected in Supabase.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleLogout = async () => {
@@ -43,6 +56,9 @@ const Dashboard = () => {
                 </div>
 
                 <div className="nav-actions">
+                    <button onClick={fetchPlaylists} className="nav-icon-btn" title="Refresh">
+                        <RefreshCw size={18} className={loading && playlists.length > 0 ? 'spinning' : ''} />
+                    </button>
                     <div className="nav-divider"></div>
                     <button onClick={handleLogout} className="logout-btn">
                         <LogOut size={16} />
@@ -62,18 +78,29 @@ const Dashboard = () => {
                 <header className="main-header fade-in">
                     <div className="header-eyebrow">CURATION DASHBOARD</div>
                     <h1>Woven Sets</h1>
-                    <p>Welcome back, {user?.user_metadata?.full_name || 'Curator'}. Select a playlist to begin.</p>
+                    <p>Welcome, {user?.user_metadata?.full_name || 'Curator'}. Select a playlist to weave.</p>
                 </header>
 
-                {loading ? (
+                {loading && playlists.length === 0 ? (
                     <div className="loading-state">
                         <div className="spinner"></div>
                         <p>Scanning your musical archives...</p>
                     </div>
+                ) : error ? (
+                    <div className="error-state glass fade-in">
+                        <div className="error-icon">!</div>
+                        <p>{error}</p>
+                        <button onClick={() => navigate('/')}>Back to Login</button>
+                    </div>
                 ) : (
-                    <div className="empty-state glass fade-in">
-                        <h3>Supabase Integration Active</h3>
-                        <p>Next: Wiring up Spotify data fetching via Supabase Edge Functions.</p>
+                    <div className="playlist-grid fade-in">
+                        {playlists.map((playlist) => (
+                            <PlaylistCard
+                                key={playlist.id}
+                                playlist={playlist}
+                                onClick={() => navigate(`/sequencer/${playlist.id}`)}
+                            />
+                        ))}
                     </div>
                 )}
             </main>

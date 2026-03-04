@@ -1,15 +1,38 @@
-import axios from 'axios';
+import { supabase } from '../lib/supabase';
 
-const API_BASE_URL = 'http://localhost:3001';
+/**
+ * Weave IO API Wrapper for Supabase Edge Functions
+ */
 
-const api = axios.create({
-    baseURL: API_BASE_URL,
-    withCredentials: true, // Crucial for cookies
-});
+const callFunction = async (name, body) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) throw new Error('Not authenticated');
 
-export const getPlaylists = () => api.get('/playlists');
-export const getPlaylistTracks = (id) => api.get(`/playlists/${id}/tracks`);
-export const sequencePlaylist = (playlistId) => api.post('/sequencer/sequence', { playlistId });
-export const exportPlaylist = (playlistId, tracks) => api.post('/sequencer/export', { playlistId, tracks });
+    const { data, error } = await supabase.functions.invoke(name, {
+        body: {
+            ...body,
+            access_token: session.provider_token // Supabase provides this for OAuth
+        }
+    });
 
-export default api;
+    if (error) throw error;
+    return { data };
+};
+
+export const getPlaylists = () => callFunction('get-playlists', {});
+
+export const getPlaylistTracks = (playlistId) =>
+    callFunction('get-playlist-tracks', { playlistId });
+
+export const sequencePlaylist = (playlistId) =>
+    callFunction('weave-sequence', { playlistId });
+
+export const exportPlaylist = (playlistId, tracks) =>
+    callFunction('export-set', { playlistId, tracks });
+
+export default {
+    getPlaylists,
+    getPlaylistTracks,
+    sequencePlaylist,
+    exportPlaylist
+};
