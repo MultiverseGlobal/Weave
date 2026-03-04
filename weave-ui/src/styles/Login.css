@@ -1,0 +1,126 @@
+.login-page {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, #12121A 0%, #0A0A0F 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.waveform-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    opacity: 0.1;
+    pointer-events: none;
+}
+
+.wave-bar {
+    width: 4px;
+    background: var(--color-accent);
+    border-radius: 20px;
+    animation: wave 2s ease-in-out infinite;
+}
+
+@keyframes wave {
+
+    0%,
+    100% {
+        height: 20%;
+        opacity: 0.5;
+    }
+
+    50% {
+        height: 80%;
+        opacity: 1;
+    }
+}
+
+.login-content {
+    z-index: 10;
+    text-align: center;
+    max-width: 450px;
+    width: 100%;
+    padding: 0 20px;
+}
+
+.logo-section {
+    margin-bottom: 3rem;
+}
+
+.logo-icon {
+    margin: 0 auto 1.5rem;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.logo-section h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    letter-spacing: -2px;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #FFF 0%, var(--color-text-muted) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.tagline {
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.info-card {
+    padding: 2.5rem;
+    border-radius: 24px;
+}
+
+.info-card p {
+    margin-bottom: 2rem;
+    color: var(--color-text-muted);
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+.login-button {
+    width: 100%;
+    padding: 1.25rem;
+    background: var(--color-accent);
+    color: white;
+    border-radius: 14px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
+}
+
+.login-button:hover {
+    background: var(--color-accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 15px 25px rgba(124, 58, 237, 0.4);
+}
+
+.login-footer {
+    position: absolute;
+    bottom: 2rem;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
