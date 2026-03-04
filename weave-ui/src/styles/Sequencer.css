@@ -14,7 +14,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 4rem;
+    padding: 0 3rem;
     z-index: 1000;
     background: rgba(5, 5, 8, 0.7);
     backdrop-filter: blur(30px);
@@ -57,7 +57,7 @@
 
 .header-title h2 {
     font-family: 'Outfit', sans-serif;
-    font-size: 1.75rem;
+    font-size: 1.4rem;
     font-weight: 800;
     letter-spacing: -0.02em;
 }
@@ -106,9 +106,9 @@
 
 .sequencer-content {
     display: grid;
-    grid-template-columns: 360px 1fr;
-    gap: 3rem;
-    padding: 2rem 4rem 4rem;
+    grid-template-columns: 320px 1fr;
+    gap: 2.5rem;
+    padding: 2rem 3rem 4rem;
 }
 
 .stats-panel {
@@ -118,8 +118,8 @@
 }
 
 .stat-group {
-    padding: 2rem;
-    border-radius: 28px;
+    padding: 1.5rem;
+    border-radius: 24px;
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -128,12 +128,12 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     font-weight: 800;
     color: rgba(255, 255, 255, 0.4);
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .chart-outer {
@@ -142,8 +142,8 @@
 }
 
 .instruction-box {
-    padding: 2.5rem;
-    border-radius: 28px;
+    padding: 1.75rem;
+    border-radius: 24px;
     background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, transparent 100%);
     border: 1px solid rgba(124, 58, 237, 0.2);
 }
@@ -164,15 +164,15 @@
 
 .instruction-box h3 {
     font-family: 'Outfit', sans-serif;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .instruction-box p {
     color: rgba(255, 255, 255, 0.5);
     line-height: 1.6;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
 /* TRACKLIST PANEL */
@@ -187,10 +187,10 @@
 
 .track-grid-header {
     display: grid;
-    grid-template-columns: 60px 1fr 120px 100px 160px;
-    padding: 1.5rem 2.5rem;
+    grid-template-columns: 60px 1fr 100px 90px 140px;
+    padding: 1.25rem 2rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     font-weight: 800;
     color: rgba(255, 255, 255, 0.3);
     text-transform: uppercase;
@@ -205,8 +205,8 @@
 
 .track-row {
     display: grid;
-    grid-template-columns: 60px 1fr 120px 100px 160px;
-    padding: 1rem 2.5rem;
+    grid-template-columns: 60px 1fr 100px 90px 140px;
+    padding: 0.85rem 2rem;
     align-items: center;
     transition: all 0.3s ease;
 }
@@ -251,7 +251,7 @@
 .track-name {
     font-weight: 700;
     color: #fff;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
 .track-artist {
