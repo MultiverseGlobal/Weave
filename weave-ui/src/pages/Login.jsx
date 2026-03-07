@@ -8,12 +8,23 @@ const Login = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            if (session) navigate('/dashboard');
-        });
+        // Explicitly check for Supabase OAuth hash fragments
+        if (window.location.hash && window.location.hash.includes('access_token')) {
+            // Let Supabase process the token in the URL first
+            supabase.auth.getSession().then(({ data: { session } }) => {
+                if (session) navigate('/dashboard', { replace: true });
+            });
+        } else {
+            // Normal session check
+            supabase.auth.getSession().then(({ data: { session } }) => {
+                if (session) navigate('/dashboard', { replace: true });
+            });
+        }
 
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            if (session) navigate('/dashboard');
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' && session) {
+                navigate('/dashboard', { replace: true });
+            }
         });
 
         return () => subscription.unsubscribe();
