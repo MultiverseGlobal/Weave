@@ -31,10 +31,16 @@ const Dashboard = () => {
         try {
             setLoading(true);
             const { data } = await getPlaylists();
+
+            if (data.error) {
+                // Spotify API returned an error
+                throw new Error(data.error.message || 'Spotify authentication error.');
+            }
+
             setPlaylists(data.items || []);
         } catch (err) {
             console.error('Error fetching playlists:', err);
-            setError('Could not load playlists. Make sure Spotify is connected in Supabase.');
+            setError(`Could not load playlists: ${err.message}. Make sure your Spotify email is whitelisted in the Developer Dashboard.`);
         } finally {
             setLoading(false);
         }
