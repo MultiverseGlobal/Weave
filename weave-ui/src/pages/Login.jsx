@@ -1,15 +1,29 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Music, Disc } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import '../styles/Login.css';
 
 const Login = () => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) navigate('/dashboard');
+        });
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            if (session) navigate('/dashboard');
+        });
+
+        return () => subscription.unsubscribe();
+    }, [navigate]);
+
     const handleLogin = async () => {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'spotify',
             options: {
                 scopes: 'user-read-private playlist-read-private playlist-modify-public playlist-modify-private',
-                redirectTo: window.location.origin + '/dashboard',
             },
         });
 
